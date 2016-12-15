@@ -1,0 +1,28 @@
+
+<div class="header">
+  <div class="bounds">
+    <h1 class="header--logo">Courses</h1>
+    <user-nav></user-nav>
+  </div>
+</div>
+
+<div class="bounds">
+
+  <div class="grid-33" ng-repeat="course in vm.courses">
+    <a class="course--module course--link" href="/#/detail/{{ course._id }}">
+      <h4 class="course--label">Course</h4>
+      <h3 class="course--title">{{ course.title }}</h3>
+    </a>
+  </div>
+
+  <div class="grid-33" ng-show="vm.userIsAuthenticated">
+    <a class="course--module course--add--module" href="/#/create">
+      <h3 class="course--add--title">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 13 13" style="enable-background:new 0 0 13 13;" xml:space="preserve" class="add">
+          <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "/>
+        </svg>
+        New Course
+      </h3>
+    </a>
+  </div>
+</div>

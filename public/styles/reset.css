@@ -1,0 +1,200 @@
+/* line 7, ../sass/reset.sass */
+a,
+abbr,
+acronym,
+address,
+applet,
+article,
+aside,
+audio,
+b,
+big,
+blockquote,
+body,
+canvas,
+caption,
+center,
+cite,
+code,
+dd,
+del,
+details,
+dfn,
+dialog,
+div,
+dl,
+dt,
+em,
+embed,
+fieldset,
+figcaption,
+figure,
+font,
+footer,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+header,
+hgroup,
+hr,
+html,
+i,
+iframe,
+img,
+ins,
+kbd,
+label,
+legend,
+li,
+main,
+mark,
+menu,
+meter,
+nav,
+object,
+ol,
+output,
+p,
+pre,
+progress,
+q,
+rp,
+rt,
+ruby,
+s,
+samp,
+section,
+small,
+span,
+strike,
+strong,
+sub,
+summary,
+sup,
+table,
+tbody,
+td,
+tfoot,
+th,
+thead,
+time,
+tr,
+tt,
+u,
+ul,
+var,
+video,
+xmp {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+}
+
+/* line 102, ../sass/reset.sass */
+html,
+body {
+  height: 100%;
+}
+
+/* line 106, ../sass/reset.sass */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section {
+  display: block;
+}
+
+/* line 125, ../sass/reset.sass */
+b,
+strong {
+  font-weight: bold;
+}
+
+/* line 132, ../sass/reset.sass */
+img {
+  color: transparent;
+  font-size: 0;
+  vertical-align: middle;
+  -ms-interpolation-mode: bicubic;
+}
+
+/* line 140, ../sass/reset.sass */
+ul,
+ol {
+  list-style: none;
+}
+
+/* line 144, ../sass/reset.sass */
+li {
+  display: list-item;
+}
+
+/* line 151, ../sass/reset.sass */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 155, ../sass/reset.sass */
+th,
+td,
+caption {
+  font-weight: normal;
+  vertical-align: top;
+  text-align: left;
+}
+
+/* line 162, ../sass/reset.sass */
+q {
+  quotes: none;
+}
+
+/* line 165, ../sass/reset.sass */
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+/* line 170, ../sass/reset.sass */
+sub,
+sup,
+small {
+  font-size: 75%;
+}
+
+/* line 175, ../sass/reset.sass */
+sub,
+sup {
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* line 181, ../sass/reset.sass */
+sub {
+  bottom: -0.25em;
+}
+
+/* line 184, ../sass/reset.sass */
+sup {
+  top: -0.5em;
+}
+
+/* line 187, ../sass/reset.sass */
+svg {
+  overflow: hidden;
+}

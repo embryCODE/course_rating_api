@@ -1,0 +1,31 @@
+
+/* styles the validation errors */
+.validation--errors--label {
+  color: #7c689b;
+  font-size: 30px;
+}
+.validation-errors ul {
+  color: #7c689b;
+  padding: 15px 0 40px 10px;
+}
+
+/* add some whitespace around the delete buttons */
+.course--reviews--list > li > form > button {
+  margin: 0 0 20px 0;
+}
+
+/* hide the step "remove" links when they are disabled */
+.course--steps--remove[disabled="disabled"], .course--steps--remove[disabled="disabled"]:hover {
+  visibility: hidden;
+}
+
+/* styles the mock data header */
+.mock--data--alert {
+  background-color: red;
+  height: 30px;
+  font-weight: bold;
+  line-height: 30px;
+  text-align: center;
+  color: white;
+  width: 100%;
+}

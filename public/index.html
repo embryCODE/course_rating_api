@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+  <meta charset="utf-8">
+  <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,500' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Cousine' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="styles/toastr.css">
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/new.css">
+  <title>Courses</title>
+</head>
+<body>
+  <div class="mock--data--alert" ng-controller="MockDataAlertController as vm" ng-show="vm.mockDataEnabled" ng-cloak>
+    Important: The application is currently using the in-browser mock data.
+  </div>
+  <div ng-view></div>
+  <script>
+    var constants = {
+      useMockData: true
+    };
+  </script>
+  <script src="/scripts/vendor.bundle.js"></script>
+  <script src="/scripts/app.bundle.js"></script>
+</body>
+</html>

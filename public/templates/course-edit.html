@@ -1,0 +1,95 @@
+
+<div class="header">
+  <div class="bounds">
+    <h1 class="header--logo">
+      <a href="/#/">Courses</a>
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 7 13" xml:space="preserve" class="chevron">
+        <polygon points="0.7,13 0,12.3 5.6,6.5 0,0.7 0.7,0 7,6.5  "/>
+      </svg>
+      <span class="selected" ng-hide="vm.courseId">New Course</span>
+      <span ng-show="vm.courseId">
+        <a href="/#/detail/{{ vm.courseId }}">{{ vm.courseTitle }}</a>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 7 13" xml:space="preserve" class="chevron">
+          <polygon points="0.7,13 0,12.3 5.6,6.5 0,0.7 0.7,0 7,6.5  "/>
+        </svg>
+        <span class="selected">Edit Course</span>
+      </span>
+    </h1>
+    <user-nav></user-nav>
+  </div>
+</div>
+
+<div class="actions--bar">
+  <div class="bounds">
+    <div class="grid-100">
+      <a class="button" ng-click="vm.saveCourse()">{{ vm.courseId ? 'Save' : 'Create' }} Course</a>
+    </div>
+  </div>
+</div>
+
+<div class="bounds course--detail">
+
+  <div ng-show="vm.hasValidationErrors">
+    <h2 class="validation--errors--label">Validation errors</h2>
+    <validation-errors errors="vm.validationErrors"></validation-errors>
+  </div>
+
+  <div class="grid-66">
+    <div class="course--header">
+      <h4 class="course--label">Course</h4>
+      <input type="text" placeholder="Course Title..."
+        class="input-title course--title--input" ng-model="vm.course.title">
+      <p>By {{ vm.course.user.fullName }}</p>
+    </div>
+
+    <div class="course--description">
+
+      <textarea class="autogrow" placeholder="Course description..."
+        ng-model="vm.course.description"></textarea>
+
+      <div class="course--steps">
+        <h2>Add steps</h2>
+        <ol>
+          <li ng-repeat="step in vm.course.steps">
+            <input type="text" placeholder="Step Title..."
+              class="input-title course--steps--input" ng-model="step.title">
+            <textarea placeholder="Step description..."
+              class="autogrow" ng-model="step.description"></textarea>
+            <a class="course--steps--add" ng-click="vm.addStep($index + 1)">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 13 13" style="enable-background:new 0 0 13 13;" xml:space="preserve" class="add">
+                <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "/>
+              </svg>
+              Add step...
+            </a>
+            <a class="course--steps--remove"
+              ng-click="vm.course.steps.length === 1 || vm.removeStep($index)"
+              ng-disabled="vm.course.steps.length === 1">
+              Remove
+            </a>
+          </li>
+        </ol>
+      </div>
+
+      <a class="button" ng-click="vm.saveCourse()">{{ vm.courseId ? 'Save' : 'Create' }} Course</a>
+
+    </div>
+  </div>
+
+  <div class="grid-25 grid-right">
+    <div class="course--stats">
+      <ul class="course--stats--list">
+        <li class="course--stats--list--item">
+          <h4>Estimated Time</h4>
+          <input type="text" class="course--time--input"
+            placeholder="Hours" ng-model="vm.course.estimatedTime" />
+        </li>
+        <li class="course--stats--list--item">
+          <h4>Materials Needed</h4>
+          <textarea class="autogrow" placeholder="List materials..."
+            ng-model="vm.course.materialsNeeded"></textarea>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+</div>
