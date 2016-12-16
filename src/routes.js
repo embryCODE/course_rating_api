@@ -3,6 +3,8 @@
 var express = require('express');
 var router = express.Router();
 var models = require('./models');
+var mid = require('./middleware');
+var fve = require('./formatValidationErrors');
 
 // GET /api/courses 200 - Returns the Course "_id" and "title" properties
 router.get('/courses', function(req, res, next) {
@@ -35,11 +37,14 @@ router.get('/courses/:id', function(req, res, next) {
 });
 
 // POST /api/courses 201 - Creates a course, sets the Location header, and returns no content
-router.post('/courses', function(req, res, next) {
+router.post('/courses', mid.checkAuthorization, function(req, res, next) {
   var course = new models.Course(req.body);
+  for (var i = 0; i < course.steps.length; i++) {
+    course.steps[i].stepNumber = i + 1;
+  }
   course.save(function(err) {
     if (err) {
-      return formatValidationErrors(err, req, res, next);
+      return fve(err, req, res, next);
     } else {
       res.status(201);
       res.location('/courses');
@@ -49,12 +54,12 @@ router.post('/courses', function(req, res, next) {
 });
 
 // PUT /api/courses/:id 204 - Updates a course and returns no content
-router.put('/courses/:id', function(req, res, next) {
+router.put('/courses/:id', mid.checkAuthorization, function(req, res, next) {
   models.Course.findOneAndUpdate({
     _id: req.params.id
   }, req.body, function(err, results) {
     if (err) {
-      return formatValidationErrors(err, req, res, next);
+      return fve(err, req, res, next);
     } else {
       res.status(204);
       res.end();
@@ -63,7 +68,7 @@ router.put('/courses/:id', function(req, res, next) {
 });
 
 // GET /api/users 200 - Returns the currently authenticated user
-router.get('/users', function(req, res, next) {
+router.get('/users', mid.checkAuthorization, function(req, res, next) {
   models.User.find()
     .exec(function(error, results) {
       if (error) {
@@ -80,18 +85,16 @@ router.post('/users', function(req, res, next) {
   var user = new models.User(req.body);
   user.save(function(err) {
     if (err) {
-      return formatValidationErrors(err, req, res, next);
-    } else {
-      res.status(201);
-      res.location('/');
-      // Be sure to check that passwords match before saving the password to hashedPassword
-      res.end();
+      return fve(err, req, res, next);
     }
+    res.status(201);
+    res.location('/');
+    res.end();
   });
 });
 
 // POST /api/courses/:courseId/reviews 201 - Creates a review for the specified course ID, sets the Location header to the related course, and returns no content
-router.post('/courses/:courseId/reviews', function(req, res, next) {
+router.post('/courses/:courseId/reviews', mid.checkAuthorization, function(req, res, next) {
 
   // get the course by ID and return the reviews only
   models.Course.findById(req.params.courseId, 'reviews')
@@ -102,6 +105,9 @@ router.post('/courses/:courseId/reviews', function(req, res, next) {
 
       // create a new review to be appended to the reviews of this course
       var review = new models.Review(req.body);
+
+      // set postedOn to now
+      review.postedOn = Date.now();
 
       // assign the user id from the authenticated user's id
       review.user = req.user._id;
@@ -117,7 +123,7 @@ router.post('/courses/:courseId/reviews', function(req, res, next) {
       // also save the new review
       review.save(function(err, results) {
         if (err) {
-          return formatValidationErrors(err, req, res, next);
+          return fve(err, req, res, next);
         } else {
           res.status(201);
           res.location('/courses/' + req.params.courseId);
@@ -128,7 +134,7 @@ router.post('/courses/:courseId/reviews', function(req, res, next) {
 });
 
 // DELETE /api/courses/:courseId/reviews/:id 204 - Deletes the specified review and returns no content
-router.delete('/courses/:courseId/reviews/:id', function(req, res, next) {
+router.delete('/courses/:courseId/reviews/:id', mid.checkAuthorization, function(req, res, next) {
   models.Review.findByIdAndRemove(req.params.id, function(err, response) {
     if (err) {
       return next(err);
@@ -137,25 +143,5 @@ router.delete('/courses/:courseId/reviews/:id', function(req, res, next) {
     res.end();
   });
 });
-
-// function to handle formatting of validation errors for angular app
-function formatValidationErrors(err, req, res, next) {
-  if (err.name === 'ValidationError') {
-    res.status(400);
-    var formattedError = {
-      message: "Validation Failed",
-      errors: {}
-    };
-    for (var i in err.errors) {
-      formattedError.errors[i] = [{
-        code: 400,
-        message: err.errors[i].message
-      }];
-    }
-    return res.json(formattedError);
-  } else {
-    return next(err);
-  }
-}
 
 module.exports = router;

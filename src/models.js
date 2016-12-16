@@ -4,6 +4,7 @@
 var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var fve = require('./formatValidationErrors');
 
 // setup reviews
 var reviewSchema = new Schema({
@@ -45,18 +46,28 @@ var userSchema = new Schema({
       message: 'Email address must be in a valid format.'
     }
   },
-  hashedPassword: String
+  password: String,
+  confirmPassword: String
 });
 
 // store user's password as a hash
 userSchema.pre('save', function(next) {
-  bcrypt.hash(this.hashedPassword, 10, function(err, hash) {
+  var user = this;
+
+  bcrypt.hash(user.password, 10, function(err, hash) {
     if (err) {
       return next(err);
     }
-    this.hashedPassword = hash;
+    user.password = hash;
+
+    bcrypt.hash(user.confirmPassword, 10, function(err, hash) {
+      if (err) {
+        return next(err);
+      }
+      user.confirmPassword = hash;
+      next();
+    });
   });
-  next();
 });
 
 // setup courses
