@@ -7,16 +7,24 @@ var bodyParser = require('body-parser');
 var app = express();
 var routes = require('./routes');
 var mongoose = require('mongoose');
+var seeder = require('mongoose-seeder');
+var seedData = require('./data/data.json');
 
 mongoose.connect('mongodb://localhost:27017/courseRatingDatabase');
-
 var db = mongoose.connection;
 
+// write db connection error to console
 db.on('error', function(err) {
   console.error('connection error: ', err);
 });
 
+// seed db log success message. if error, write it to console
 db.on('open', function() {
+  seeder.seed(seedData)
+    .catch(function(err) {
+      console.error('database seed error: ', err);
+    });
+
   console.log('connection to database successful');
 });
 
@@ -25,7 +33,9 @@ app.use(morgan('dev'));
 
 // setup body parser
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 
 // setup our static route to serve files from the "public" folder
 app.use('/', express.static('public'));
@@ -35,10 +45,10 @@ app.use('/api', routes);
 
 // if a request makes it this far without a response, create a 404 error
 // and forward to error handler
-app.use(function(req, res, next){
-	var err = new Error("Not Found");
-	err.status = 404;
-	next(err);
+app.use(function(req, res, next) {
+  var err = new Error("Not Found");
+  err.status = 404;
+  next(err);
 });
 
 // error handler

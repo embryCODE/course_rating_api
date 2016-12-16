@@ -2,6 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
+var models = require('./models');
 
 // GET /api/courses 200 - Returns the Course "_id" and "title" properties
 router.get('/courses', function(req, res, next) {
