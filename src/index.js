@@ -20,7 +20,7 @@ db.on('error', function(err) {
 
 // seed db log success message. if error, write it to console
 db.on('open', function() {
-  seeder.seed(seedData)
+  seeder.seed(seedData, { dropDatabase: false})
     .catch(function(err) {
       console.error('database seed error: ', err);
     });
