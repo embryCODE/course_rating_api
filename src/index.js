@@ -4,9 +4,21 @@
 var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
-
 var app = express();
 var routes = require('./routes');
+var mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/courseRatingDatabase');
+
+var db = mongoose.connection;
+
+db.on('error', function(err) {
+  console.error('connection error: ', err);
+});
+
+db.on('open', function() {
+  console.log('connection to database successful');
+});
 
 // morgan gives us http request logging
 app.use(morgan('dev'));
