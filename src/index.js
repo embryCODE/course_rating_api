@@ -1,6 +1,5 @@
 'use strict';
 
-// load modules
 var express = require('express');
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
@@ -18,15 +17,16 @@ db.on('error', function(err) {
   console.error('connection error: ', err);
 });
 
-// seed db log success message. if error, write it to console
-db.on('open', function() {
-  seeder.seed(seedData, { dropDatabase: true})
-    .catch(function(err) {
-      console.error('database seed error: ', err);
-    });
-
-  console.log('connection to database successful');
-});
+// seed db and log success message. if error, write it to console
+// db.on('open', function() {
+//   seeder.seed(seedData, { dropDatabase: true})
+//     .then(function() {
+//       console.log('connection to database successful');
+//     })
+//     .catch(function(err) {
+//       console.error('database seed error: ', err);
+//     });
+// });
 
 // morgan gives us http request logging
 app.use(morgan('dev'));
@@ -51,7 +51,7 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handler
+// error handler sends error as json
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.json({

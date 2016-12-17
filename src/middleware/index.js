@@ -28,11 +28,14 @@ function checkAuthorization(req, res, next) {
 
         // Use bcrypt to compare password from credentials with password from db.
       } else {
+        // User is added to request object as req.user
+        req.user = user;
+
+        // Password check.
         bcrypt.compare(credentials.pass, user.password, function(error, result) {
 
-          // If passwords match, user is added to request object as req.user
+          // If passwords match, continue.
           if (result === true) {
-            req.user = user;
             return next();
 
             // If passwords don't match, throw 401 error.

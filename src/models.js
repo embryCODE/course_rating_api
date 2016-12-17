@@ -1,10 +1,12 @@
 'use strict';
 
-// modules
 var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var fve = require('./formatValidationErrors');
+
+
+/* REVIEW MODEL */
 
 // setup reviews
 var reviewSchema = new Schema({
@@ -22,10 +24,15 @@ var reviewSchema = new Schema({
   review: String
 });
 
+// Round entered rating to nearest integer before saving to db.
 reviewSchema.pre('save', function(next) {
   Math.round(this.rating);
   next();
 });
+
+
+
+/* USER MODEL */
 
 // setup users
 var userSchema = new Schema({
@@ -39,6 +46,8 @@ var userSchema = new Schema({
     required: [true, 'An email address is required.'],
     unique: true,
     trim: true,
+
+    // Custom validation for email format.
     validate: {
       validator: function(email) {
         return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
@@ -50,35 +59,47 @@ var userSchema = new Schema({
   confirmPassword: String
 });
 
-// validate middleware compares the two password fields
+// Validate middleware compares the two password fields
 userSchema.pre('validate', function(next) {
   if (this.password !== this.confirmPassword) {
+
+    // Manually invalidate password field if they don't match.
     this.invalidate('password', 'Passwords must match.');
     next();
+
+    // If they match, continue.
   } else {
     next();
   }
 });
 
-// store user's password as a hash
+// Hash passwords before saving to db.
 userSchema.pre('save', function(next) {
   var user = this;
 
+  // First hash the password field.
   bcrypt.hash(user.password, 10, function(err, hash) {
     if (err) {
       return next(err);
     }
     user.password = hash;
 
+    // Then hash the confirmPassword field.
     bcrypt.hash(user.confirmPassword, 10, function(err, hash) {
       if (err) {
         return next(err);
       }
       user.confirmPassword = hash;
+
+      // Call next() when both passwords are hashed.
       next();
     });
   });
 });
+
+
+
+/* COURSE MODEL */
 
 // setup courses
 var courseSchema = new Schema({
@@ -116,7 +137,7 @@ var courseSchema = new Schema({
   }]
 });
 
-// create virtual overallRating field in courses
+// Create virtual overallRating field in courses.
 courseSchema.virtual('overallRating').get(function() {
   var ratingsTotal = 0;
   var result = 0;
@@ -129,9 +150,12 @@ courseSchema.virtual('overallRating').get(function() {
   return result;
 });
 
+// Set the overalRating virtual field to be sent with json. Default is off.
 courseSchema.set('toJSON', {
   virtuals: true
 });
+
+
 
 var Review = mongoose.model('Review', reviewSchema);
 var User = mongoose.model('User', userSchema);

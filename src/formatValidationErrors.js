@@ -15,6 +15,8 @@ function formatValidationErrors(err, req, res, next) {
       }];
     }
     return res.json(formattedError);
+
+    // If error is not a validation error, just pass it through.
   } else {
     return next(err);
   }
