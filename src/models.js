@@ -50,6 +50,15 @@ var userSchema = new Schema({
   confirmPassword: String
 });
 
+userSchema.pre('validate', function(next) {
+  if (this.password !== this.confirmPassword) {
+    this.invalidate('password', 'Passwords must match.');
+    next();
+  } else {
+    next();
+  }
+});
+
 // store user's password as a hash
 userSchema.pre('save', function(next) {
   var user = this;
