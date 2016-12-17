@@ -19,7 +19,7 @@ var reviewSchema = new Schema({
     min: [1, 'A minimum rating of "1" is required.'],
     max: [5, '"5" is the maximum rating.']
   },
-  Review: String
+  review: String
 });
 
 reviewSchema.pre('save', function(next) {
@@ -50,6 +50,7 @@ var userSchema = new Schema({
   confirmPassword: String
 });
 
+// validate middleware compares the two password fields
 userSchema.pre('validate', function(next) {
   if (this.password !== this.confirmPassword) {
     this.invalidate('password', 'Passwords must match.');
