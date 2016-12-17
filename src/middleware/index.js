@@ -24,7 +24,7 @@ function checkAuthorization(req, res, next) {
             req.user = user;
             return next();
           } else {
-            return next(error);
+            return res.status(401).send();
           }
         });
       }
