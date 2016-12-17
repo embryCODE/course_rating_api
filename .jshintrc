@@ -1,0 +1,11 @@
+{
+  "strict": "global",
+  "globals": {
+    "require": true,
+    "module": true,
+    "console": true,
+    "__dirname": true,
+    "exports": true,
+    "process": true
+  }
+}
