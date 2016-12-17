@@ -18,15 +18,15 @@ db.on('error', function(err) {
 });
 
 // seed db and log success message. if error, write it to console
-// db.on('open', function() {
-//   seeder.seed(seedData, { dropDatabase: true})
-//     .then(function() {
-//       console.log('connection to database successful');
-//     })
-//     .catch(function(err) {
-//       console.error('database seed error: ', err);
-//     });
-// });
+db.on('open', function() {
+  seeder.seed(seedData, { dropDatabase: true})
+    .then(function() {
+      console.log('connection to database successful');
+    })
+    .catch(function(err) {
+      console.error('database seed error: ', err);
+    });
+});
 
 // morgan gives us http request logging
 app.use(morgan('dev'));
