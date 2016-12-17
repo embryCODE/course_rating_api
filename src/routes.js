@@ -70,8 +70,7 @@ router.put('/courses/:id', mid.checkAuthorization, function(req, res, next) {
 // GET /api/users 200 - Returns the currently authenticated user
 router.get('/users', mid.checkAuthorization, function(req, res, next) {
 
-  // get currently authenticated user from req and send as json object in
-  // correct format
+  // get currently authenticated user from req and send as json object in correct format
   res.json({
     data: [req.user]
   });
