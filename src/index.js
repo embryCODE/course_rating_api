@@ -18,6 +18,7 @@ db.on('error', function(err) {
 });
 
 // seed db and log success message. if error, write it to console
+// NOTE: Uncomment this code to seed the database.
 db.on('open', function() {
   seeder.seed(seedData, { dropDatabase: true})
     .then(function() {
