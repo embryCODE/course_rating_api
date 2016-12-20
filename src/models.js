@@ -59,6 +59,12 @@ var userSchema = new Schema({
   confirmPassword: String
 });
 
+// Password must be at least 8 characters.
+userSchema.path('password').validate(function (v, callback) {
+	var regEx = new RegExp("^(?=.{8,})");
+	return regEx.test(this.password);
+}, "The password must contain at least 8 characters.");
+
 // Validate middleware compares the two password fields
 userSchema.pre('validate', function(next) {
   if (this.password !== this.confirmPassword) {
@@ -96,8 +102,6 @@ userSchema.pre('save', function(next) {
     });
   });
 });
-
-
 
 /* COURSE MODEL */
 

@@ -42,47 +42,59 @@ router.get('/courses/:id', function(req, res, next) {
 Creates a course, sets the Location header, and returns no content */
 router.post('/courses', mid.checkAuthorization, function(req, res, next) {
 
-  /* NOTE: Authorized user must be present in order to create a course. */
+  // The current user can only add courses for themselves
+  if (req.body.user._id === req.user._id.toJSON()) {
+    var course = new models.Course(req.body);
 
-  var course = new models.Course(req.body);
+    // Set the stepNumber field by counting the number of steps.
+    for (var i = 0; i < course.steps.length; i++) {
+      course.steps[i].stepNumber = i + 1;
+    }
 
-  // Set the stepNumber field by counting the number of steps.
-  for (var i = 0; i < course.steps.length; i++) {
-    course.steps[i].stepNumber = i + 1;
+    course.save(function(err) {
+      if (err) {
+
+        /* fve checks if the error is a ValidationError and formats it correctly.
+        If not, it passes the error through. */
+        return fve(err, req, res, next);
+
+        // If no error, send 201 and set location to /courses.
+      } else {
+        res.status(201);
+        res.location('/courses');
+        res.end();
+      }
+    });
+  } else {
+    var err = new Error("Sorry, you can only add a course for yourself.");
+    err.status = 401;
+    return next(err);
   }
 
-  course.save(function(err) {
-    if (err) {
 
-      /* fve checks if the error is a ValidationError and formats it correctly.
-      If not, it passes the error through. */
-      return fve(err, req, res, next);
-
-      // If no error, send 201 and set location to /courses.
-    } else {
-      res.status(201);
-      res.location('/courses');
-      res.end();
-    }
-  });
 });
 
 /* PUT /api/courses/:id 204
 Updates a course and returns no content */
 router.put('/courses/:id', mid.checkAuthorization, function(req, res, next) {
 
-  /* NOTE: Authorized user must be present in order to edit a course. */
-
-  models.Course.findOneAndUpdate({
-    _id: req.params.id
-  }, req.body, function(err, results) {
-    if (err) {
-      return fve(err, req, res, next);
-    } else {
-      res.status(204);
-      res.end();
-    }
-  });
+  // The current user can only edit courses for themselves
+  if (req.body.user._id === req.user._id.toJSON()) {
+    models.Course.findOneAndUpdate({
+      _id: req.params.id
+    }, req.body, function(err, results) {
+      if (err) {
+        return fve(err, req, res, next);
+      } else {
+        res.status(204);
+        res.end();
+      }
+    });
+  } else {
+    var err = new Error("Sorry, you can only edit a course for yourself.");
+    err.status = 401;
+    return next(err);
+  }
 });
 
 /* GET /api/users 200
@@ -130,20 +142,20 @@ router.post('/courses/:courseId/reviews', mid.checkAuthorization, function(req, 
       }
 
       // Don't allow more than one review per user.
-      course.reviews.forEach(function(review) {
-          if (review.user.toJSON() === req.user._id.toJSON()) {
-            err = new Error("Sorry, you can only add one review per course.");
-            err.status = 401;
-            return next(err);
-          }
-      });
+      for (var i = 0; i < course.reviews.length; i++) {
+        if (course.reviews[i].user.toJSON() === req.user._id.toJSON()) {
+          err = new Error("Sorry, you can only add one review per course.");
+          err.status = 401;
+          return next(err);
+        }
+      }
 
       // Don't allow the course owner to post a review on their own course.
-      // if (req.user._id.toJSON() === course.user._id.toJSON()) {
-      //   err = new Error("Sorry, you can't review your own courses.");
-      //   err.status = 401;
-      //   return next(err);
-      // }
+      if (req.user._id.toJSON() === course.user._id.toJSON()) {
+        err = new Error("Sorry, you can't review your own courses.");
+        err.status = 401;
+        return next(err);
+      }
 
       // Create a new review to be appended to the reviews of this course
       var review = new models.Review(req.body);
@@ -252,6 +264,8 @@ router.delete('/courses/:courseId/reviews/:id', mid.checkAuthorization, function
     });
 });
 
+
+
 /* UNSUPPORTED ROUTES */
 
 /* PUT /api/users 403 */
@@ -332,5 +346,7 @@ router.put('/courses/:courseId/reviews/:id', function(req, res, next) {
   err.status = 403;
   return next(err);
 });
+
+
 
 module.exports = router;
