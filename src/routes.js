@@ -27,13 +27,13 @@ router.get('/courses/:id', function(req, res, next) {
 
   // Populate the reviews and user field.
   .populate('reviews')
-    .populate('user')
+  .populate('user', '_id')
     .exec(function(error, results) {
       if (error) {
         return next(error);
       }
       res.json({
-        data: [results]
+        data: [results.toJSON({ virtuals: true })]
       });
     });
 });

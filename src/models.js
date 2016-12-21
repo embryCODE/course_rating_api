@@ -22,6 +22,8 @@ var reviewSchema = new Schema({
     max: [5, '"5" is the maximum rating.']
   },
   review: String
+}, {
+  id: false
 });
 
 // Round entered rating to nearest integer before saving to db.
@@ -55,14 +57,22 @@ var userSchema = new Schema({
       message: 'Email address must be in a valid format.'
     }
   },
-  password: String,
-  confirmPassword: String
+  password: {
+    type: String,
+    required: [true, 'Please enter a password.']
+  },
+  confirmPassword: {
+    type: String,
+    required: [true, 'Please enter a confirmation password.']
+  }
+}, {
+  id: false
 });
 
 // Password must be at least 8 characters.
-userSchema.path('password').validate(function (v, callback) {
-	var regEx = new RegExp("^(?=.{8,})");
-	return regEx.test(this.password);
+userSchema.path('password').validate(function(v, callback) {
+  var regEx = new RegExp("^(?=.{8,})");
+  return regEx.test(this.password);
 }, "The password must contain at least 8 characters.");
 
 // Validate middleware compares the two password fields
@@ -139,6 +149,8 @@ var courseSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Review'
   }]
+}, {
+  id: false
 });
 
 // Create virtual overallRating field in courses.
@@ -152,11 +164,6 @@ courseSchema.virtual('overallRating').get(function() {
     result = Math.round(ratingsTotal / this.reviews.length);
   }
   return result;
-});
-
-// Set the overalRating virtual field to be sent with json. Default is off.
-courseSchema.set('toJSON', {
-  virtuals: true
 });
 
 
